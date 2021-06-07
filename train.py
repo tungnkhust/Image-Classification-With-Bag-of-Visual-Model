@@ -54,7 +54,7 @@ def train(
 
     print('Create features...')
     # create feature form bov
-    im_features = extract_feature(bov, descriptor_list, image_count, n_visuals)
+    im_features = extract_feature(bov, descriptor_list, n_visuals)
     # normalize feature
 
     scale = StandardScaler()
@@ -108,7 +108,7 @@ def evaluate(model_clf_path,
     test_labels = np.array(test_labels)
 
     print('Extract feature')
-    test_features = extract_feature(bov, descriptor_list, image_count, n_visuals)
+    test_features = extract_feature(bov, descriptor_list, n_visuals)
     test_features = scale_.transform(test_features)
 
     print('Predict:')
