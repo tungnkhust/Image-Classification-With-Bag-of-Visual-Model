@@ -20,7 +20,7 @@ def split_data_dir(dir_path, label2idx, test_rate=0.2):
     return train_df['file'].tolist(), test_df['file'].tolist()
 
 
-def split_data_balance(df: pd.DataFrame, label_col='label', test_rate=0.2, shuffle=False, seed=42):
+def split_data_balance(df: pd.DataFrame, label_col='label', test_rate=0.2, shuffle=False, seed=1):
     np.random.seed(seed)
     dict_label = defaultdict(list)
     for _, row in df.iterrows():
@@ -93,8 +93,9 @@ def get_files(path: str, train: bool = False):
     images = []
     for folder in os.listdir(path):
         folder_path = os.path.join(path, folder)
-        for file in os.listdir(folder_path):
-            images.append(os.path.join(folder_path, file))
+        if os.path.isdir(folder_path):
+            for file in os.listdir(folder_path):
+                images.append(os.path.join(folder_path, file))
 
     if train:
         np.random.shuffle(images)
