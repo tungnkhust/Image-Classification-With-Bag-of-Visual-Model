@@ -145,7 +145,7 @@ if __name__ == '__main__':
     test_dir = 'data/test'
     result_path = 'results'
     data = 'data/train'
-    data = 'natural_images'
+    data = 'data/archive/natural_images'
 
     if os.path.exists('models') is False:
         os.makedirs('models')
