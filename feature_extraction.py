@@ -48,7 +48,7 @@ def extract_feature(bov, descriptor_list, image_count, n_visuals, n_features=128
     # init features
     im_features = np.array([np.zeros(n_visuals) for i in range(image_count)])
     for i in range(image_count):
-        for j in range(len(descriptor_list)):
+        for j in range(len(descriptor_list[i])):
             # with each feature of image i, predict which cluster it belongs to
             feature = descriptor_list[i][j]
             feature = feature.reshape(1, n_features)

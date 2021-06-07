@@ -6,6 +6,7 @@ import itertools
 from sklearn.metrics import confusion_matrix
 from metrics import get_metrics
 import pickle
+from sklearn.metrics import classification_report
 
 
 def get_label_from_path(path, label2idx):
@@ -105,10 +106,21 @@ def plot_confusion_matrix(
     plt.show()
 
 
-def write_metrics(y_true, y_pred, average='macro', result_path='results', show=False):
+def write_metrics(y_true, y_pred, label2idx=None, average='macro', result_path='results', show=False):
     if os.path.exists(result_path) is False:
         os.makedirs(result_path)
-    acc, precision, recall, f1_score, report = get_metrics(y_true, y_pred, average)
+
+    true_label = y_true
+    pred_label = y_pred
+    labels = None
+    if label2idx:
+        idx2label = {idx: label for label, idx in label2idx.items()}
+        true_label = [idx2label[y] for y in y_true]
+        pred_label = [idx2label[y] for y in y_pred]
+        labels = list(label2idx.keys())
+
+    acc, precision, recall, f1_score = get_metrics(y_true, y_pred, average)
+    report = classification_report(true_label, pred_label, labels, labels=labels)
     with open(os.path.join(result_path, 'metric_scores.txt'), 'w') as pf:
         pf.write(f'Accuracy : {acc}\n')
         pf.write(f'Precision: {precision}\n')
@@ -128,9 +140,8 @@ def write_metrics(y_true, y_pred, average='macro', result_path='results', show=F
 
 def plot_histogram(im_features, num_clusters):
     x_scalar = np.arange(num_clusters)
-    y_scalar = np.array(abs(np.sum(im_features[:, h], dtype=np.int32)) for h in range(num_clusters))
-
-    plt.bar(x_scalar, y_scalar)
+    y_scalar = np.array([abs(np.sum(im_features[:, h], dtype=np.int32)) for h in range(num_clusters)])
+    plt.bar(x_scalar.tolist(), y_scalar.tolist())
     plt.xlabel('Visual word index')
     plt.ylabel('Frequency')
     plt.title('Complete Vocabulary Generated')

@@ -7,5 +7,4 @@ def get_metrics(y_true, y_pred, average='marcor'):
     precision = precision_score(y_true, y_pred, average=average)
     recall = recall_score(y_true, y_pred, average=average)
     f1 = f1_score(y_true, y_pred, average=average)
-    report = classification_report(y_true, y_pred)
-    return acc, precision, recall, f1, report
+    return acc, precision, recall, f1
