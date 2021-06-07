@@ -66,7 +66,7 @@ def train(
     im_features = scale.transform(im_features)
 
     # plot histogram
-    plot_histogram(im_features, n_visuals)
+    # plot_histogram(im_features, n_visuals)
 
     print('Training...')
     model_clf.fit(im_features, train_labels)
