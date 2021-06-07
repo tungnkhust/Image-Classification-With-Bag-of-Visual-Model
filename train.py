@@ -1,16 +1,14 @@
-import argparse
 import cv2
 import numpy as np
 import os
 import pickle
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
-from utils import get_files, get_label_from_path
-from utils import read_image, load_model
-from feature_extraction import get_descriptors
-from feature_extraction import create_bov, extract_feature
-from utils import plot_histogram
-from utils import write_metrics, plot_confusion_matrix
+from src.utils import get_files, get_label_from_path
+from src.utils import read_image, load_model
+from src.feature_extraction import get_descriptors
+from src.feature_extraction import create_bov, extract_feature
+from src.utils import write_metrics, plot_confusion_matrix
 
 
 def train(

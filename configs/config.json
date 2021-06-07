@@ -1,0 +1,22 @@
+{
+  "label2idx": {
+    "city": 0,
+    "face": 1,
+    "green": 2,
+    "house_building": 3,
+    "house_indoor": 4,
+    "office": 5,
+    "sea": 6
+  },
+  "extractor": "Feature2D.SIFT",
+  "image_size": [128, 128],
+  "n_visuals": 50,
+  "serialization_dir": "models/BOW",
+  "train_dir":  "data/bow/train",
+  "test_dir": "data/bow/test",
+  "result_path": "results",
+    "filenames_path": null,
+  "train_names_path": null,
+  "test_names_path": null,
+  "split_is_dir": false
+}

@@ -1,1 +1,50 @@
 # BTL_CV
+
+## Set up
+#### Cài đặt môi trường
+- Cài đặt môi trường anaconda theo hướng dẫn tại [đây](https://docs.anaconda.com/anaconda/install/)
+- Sau khi cài đặt tạo môi trường mới:
+```
+conda create -n name_env python==3.6.9
+conda activate name_env
+```
+- Cài đặt các package và thư viện liên quan
+```bash
+pip install -r requirement.txt
+```
+
+
+## Use command line interface
+#### Huấn luyện models
+- chỉnh sửa các siêu tham số trong file config tương tứng
+- run command line:
+```
+python run_cli.py --mode=train --config_path=configs/natural_image_config.json
+```
+
+#### Đánh giá models
+- run command line:
+```
+python run_cli.py --mode=eval --config_path=configs/natural_image_config.json
+```
+or
+```
+python run_cli.py --mode=eval \ 
+--serialization_dir=models/NeutralImage \
+--test_path=data/natural_images/test_names.csv
+```
+
+#### Dự đoán
+```
+python run_cli.py --mode=infer \
+--config_path=configs/natural_image_config.json \
+--image_path='data/natural_images/car/car_0000.jpg' \
+--imshow=True
+```
+or
+```
+python run_cli.py --mode=infer \
+--serialization_dir=models/NeutralImage \
+--image_path='data/natural_images/car/car_0000.jpg' \
+--imshow=True
+```
