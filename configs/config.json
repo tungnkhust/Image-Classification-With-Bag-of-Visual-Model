@@ -1,22 +1,20 @@
 {
   "label2idx": {
-    "city": 0,
-    "face": 1,
-    "green": 2,
-    "house_building": 3,
-    "house_indoor": 4,
-    "office": 5,
-    "sea": 6
-  },
-  "extractor": "Feature2D.SIFT",
-  "image_size": [128, 128],
-  "n_visuals": 50,
-  "serialization_dir": "models/BOW",
-  "train_dir":  "data/bow/train",
-  "test_dir": "data/bow/test",
-  "result_path": "results",
-    "filenames_path": null,
-  "train_names_path": null,
-  "test_names_path": null,
-  "split_is_dir": false
+        "airplane": 0,
+        "car": 1,
+        "cat": 2,
+        "dog": 3,
+        "flower": 4,
+        "fruit": 5,
+        "motorbike": 6,
+        "person": 7
+    },
+  "extractor_name": "Feature2D.SIFT",
+  "image_size": [150, 150],
+  "n_visuals": 100,
+  "serialization_dir": "models/NeutralImage",
+  "train_path": "data/natural_images/train_names.csv",
+  "test_path": "data/natural_images/test_names.csv",
+  "data_path": null,
+  "result_path": "results"
 }

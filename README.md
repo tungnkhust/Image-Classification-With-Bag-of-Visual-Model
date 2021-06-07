@@ -48,3 +48,36 @@ python run_cli.py --mode=infer \
 --image_path='data/natural_images/car/car_0000.jpg' \
 --imshow=True
 ```
+
+## Config hyper parameters:
+```json
+{
+  "label2idx": {
+        "airplane": 0,
+        "car": 1,
+        "cat": 2,
+        "dog": 3,
+        "flower": 4,
+        "fruit": 5,
+        "motorbike": 6,
+        "person": 7
+    },
+  "extractor_name": "Feature2D.SIFT",
+  "image_size": [150, 150],
+  "n_visuals": 100,
+  "serialization_dir": "models/NeutralImage",
+  "train_path": "data/natural_images/train_names.csv",
+  "test_path": "data/natural_images/test_names.csv",
+  "data_path": null,
+  "result_path": "results"
+}
+```
+- label2idx: mapper: chuyển label thành index
+- extractor_name: tên của bộ trích xuất đặc trưng: hiện tại hỗ trợ 2 bộ là "Feature2D.SIFT" và "Feature2D.ORB"
+- image_size: size of image after read
+- n_visuals: số lượng từ trọng visuals vocab = số cụm khi phân loại
+- serialization_dir: folder lưu model và config
+- train_path: đường dẫn tới data train, có thể là thư mục chứa hình ảnh, hoặc file chứ các đường dần của tập train
+- test_path: đường dẫn tới data test, có thể là thư mục chứa hình ảnh, hoặc file chứ các đường dần của tập test
+- data_path: đường dẫn tới data, nếu như tập data chưa được chia train và test
+- result_path: đường dẫn tới thư mục lưu kết quả đánh giá
