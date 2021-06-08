@@ -1,0 +1,20 @@
+{
+  "label2idx": {
+        "airplane": 0,
+        "car": 1,
+        "cat": 2,
+        "dog": 3,
+        "flower": 4,
+        "fruit": 5,
+        "motorbike": 6,
+        "person": 7
+    },
+  "extractor_name": "Feature2D.SIFT",
+  "image_size": [150, 150],
+  "n_visuals": 100,
+  "serialization_dir": "models/NeutralImage",
+  "train_path": "data/natural_images/train_names.csv",
+  "test_path": "data/natural_images/test_names.csv",
+  "data_path": null,
+  "result_path": "results"
+}

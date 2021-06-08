@@ -1,18 +1,15 @@
-import argparse
 import cv2
 import numpy as np
 import os
 import pickle
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
-from utils import get_files, get_label_from_path
-from utils import read_image, load_model
-from feature_extraction import get_descriptors
-from feature_extraction import create_bov, extract_feature
-from utils import plot_histogram
-from utils import write_metrics, plot_confusion_matrix
-from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
+from src.utils import get_files, get_label_from_path
+from src.utils import read_image, load_model
+from src.feature_extraction import get_descriptors
+from src.feature_extraction import create_bov, extract_feature
+from src.utils import write_metrics, plot_confusion_matrix
 
 
 def train(
@@ -63,7 +60,7 @@ def train(
 
     print('Create features...')
     # create feature form bov
-    im_features = extract_feature(bov, descriptor_list, image_count, n_visuals)
+    im_features = extract_feature(bov, descriptor_list, n_visuals)
     # normalize feature
 
     scale = StandardScaler()
@@ -122,7 +119,7 @@ def evaluate(model_clf_path,
     test_labels = np.array(test_labels)
     '''
     print('Extract feature')
-    test_features = extract_feature(bov, descriptor_list, image_count, n_visuals)
+    test_features = extract_feature(bov, descriptor_list, n_visuals)
     test_features = scale_.transform(test_features)
 
     print('Predict:')
@@ -144,8 +141,7 @@ if __name__ == '__main__':
     train_dir = 'data/train'
     test_dir = 'data/test'
     result_path = 'results'
-    data = 'data/train'
-    data = 'data/archive/natural_images'
+    data = 'data/natural_images'
 
     if os.path.exists('models') is False:
         os.makedirs('models')
@@ -157,17 +153,6 @@ if __name__ == '__main__':
     #extractor = cv2.xfeatures2d.SURF_create(500)
     model_clf = LinearSVC()
 
-
-    
-    label2idx = {
-        'city': 0,
-        'face': 1,
-        'green': 2,
-        'house_building': 3,
-        'house_indoor': 4,
-        'office': 5,
-        'sea': 6
-    }
     label2idx = {
         'airplane': 0,
         'car': 1,
