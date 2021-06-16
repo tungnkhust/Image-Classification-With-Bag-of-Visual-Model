@@ -8,37 +8,13 @@ import os
 def train(config_path):
     print(f"Load config from {config_path}.")
     config = load_json(config_path)
-    extractor = config['extractor_name']
-    serialization_dir = config['serialization_dir']
-    n_visuals = config['n_visuals']
-    if extractor == 'Feature2D.SIFT':
-        extractor_ = cv2.SIFT_create()
-    elif extractor == 'Feature2D.ORB':
-        extractor_ = cv2.ORB_create()
-    else:
-        extractor_ = None
-
-    bov_path = os.path.join(serialization_dir, f'bov_{n_visuals}.sav')
-    if os.path.exists(bov_path) is False:
-        bov_path = None
-    learner = BoWLearner(
-        label2idx=config['label2idx'],
-        n_visuals=n_visuals,
-        image_size=config['image_size'],
-        bov_path=bov_path,
-        extractor=extractor_,
-        serialization_dir=config['serialization_dir'],
-        train_path=config['train_path'],
-        test_path=config['test_path'],
-        result_path=config['result_path'],
-        data_path=config['data_path']
-    )
+    learner = BoWLearner.from_config(config=config)
     learner.train()
 
 
-def evaluate(serialization_dir, test_path=None):
+def evaluate(serialization_dir, test_path=None, result_path='results'):
     learner = BoWLearner.from_serialization_dir(serialization_dir=serialization_dir)
-    learner.evaluate(img_paths=test_path)
+    learner.evaluate(img_paths=test_path, result_path=result_path)
 
 
 def infer(serialization_dir, image_path, imshow=False):
@@ -54,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--serialization_dir', type=str, default=None)
     parser.add_argument('--result_path', type=str, default='results')
     parser.add_argument('--test_path', type=str, default='data/natural_images/test_names.csv')
-    parser.add_argument('--image_path', type=str, default='data/natural_images/car/car_0000.jpg')
+    parser.add_argument('--image_path', type=str, default='data/natural_images/car/car_0000.flower')
     parser.add_argument('--imshow', type=bool, default=False)
 
     args = parser.parse_args()
@@ -77,7 +53,7 @@ if __name__ == '__main__':
             test_path = args.test_path
 
         print(args.test_path)
-        evaluate(serialization_dir, test_path)
+        evaluate(serialization_dir, test_path, args.result_path)
 
     elif args.mode == 'infer':
         if args.serialization_dir is None:

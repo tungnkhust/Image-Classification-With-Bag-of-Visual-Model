@@ -1,0 +1,9 @@
+{
+  "image_size": [150, 150],
+  "extractor_name": "Feature2D.SIFT",
+  "n_visuals": 100,
+  "bov_dir": "models/bov",
+  "data_path": "data/natural_images/train_names.csv",
+  "extend_image_dir": "data/extend",
+  "use_extend_image": true
+}

@@ -1,4 +1,5 @@
 import os
+import warnings
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -10,9 +11,58 @@ import json
 from sklearn.metrics import classification_report
 from collections import defaultdict, Counter
 import pandas as pd
+from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.svm import LinearSVC, SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier, LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+def get_extractor(extractor_name: str):
+    """Get extractor by name"""
+    if extractor_name.lower() in 'Feature2D.SIFT'.lower():
+        extractor = cv2.SIFT_create()
+    elif extractor_name.lower() in 'Feature2D.ORB'.lower():
+        extractor = cv2.ORB_create()
+    else:
+        return None
+
+    return extractor
+
+
+def get_model(model_name: str, **kwargs):
+    """
+    Get model by name and argument corresponding to each model in **kwargs
+    :param model_name: model name
+    :param kwargs: argument corresponding to each model
+    :return: model
+    """
+    if model_name.lower() == 'KMeans'.lower():
+        return KMeans(**kwargs)
+    if model_name.lower() == 'MiniBatchKMeans'.lower():
+        return MiniBatchKMeans(**kwargs)
+    if model_name.lower() == 'LinearSVC'.lower():
+        return LinearSVC(**kwargs)
+    if model_name.lower() == 'SVC'.lower():
+        return SVC(**kwargs)
+    if model_name.lower() == 'MLPClassifier'.lower():
+        return MLPClassifier(**kwargs)
+    if model_name.lower() == 'RandomForestClassifier'.lower():
+        return RandomForestClassifier(**kwargs)
+    if model_name.lower() == 'SGDClassifier'.lower():
+        return SGDClassifier(**kwargs)
+    if model_name.lower() == 'LogisticRegression'.lower():
+        return LogisticRegression(**kwargs)
+    else:
+        warnings.warn("Model name is not support. So get default is LinearSVC model.")
+        return LinearSVC()
 
 
 def split_data_dir(dir_path, label2idx, test_rate=0.2):
+    """
+    split a image dir to cho_meo - test and save in dataframe with columns `label` is column save path to images
+    """
     files = get_files(dir_path)
     labels = get_label_from_path(files, label2idx)
     file_df = pd.DataFrame({"file": files, "label": labels})
@@ -21,6 +71,7 @@ def split_data_dir(dir_path, label2idx, test_rate=0.2):
 
 
 def split_data_balance(df: pd.DataFrame, label_col='label', test_rate=0.2, shuffle=False, seed=1):
+    """Split a image paths to cho_meo-test and satisfy balanced label"""
     np.random.seed(seed)
     dict_label = defaultdict(list)
     for _, row in df.iterrows():
@@ -42,23 +93,25 @@ def split_data_balance(df: pd.DataFrame, label_col='label', test_rate=0.2, shuff
 
 
 def load_json(file):
+    """Load file json"""
     with open(file, 'r') as pf:
         data = json.load(pf)
         return data
 
 
 def get_label_from_path(paths, label2idx):
+    "label of image is name of folder or in a paths. So can get label of image from path"
     if isinstance(paths, list):
         labels = []
         for path in paths:
             for key in label2idx:
-                if key in path:
+                if key.lower() in path.lower():
                     labels.append(label2idx[key])
         return labels
-
-    for key in label2idx:
-        if key in paths:
-            return label2idx[key]
+    elif isinstance(paths, str):
+        for key in label2idx:
+            if key.lower() in paths.lower():
+                return label2idx[key]
 
     raise ValueError('label value is not in label2idx')
 
@@ -83,24 +136,40 @@ def load_model(model_path):
     return model
 
 
-def get_files(path: str, train: bool = False):
+def get_files(path: str, shuffle: bool = False):
     """
     Get all file paths from data directory
     :param path: path to data directory
-    :param train: if true then shuffle paths
+    :param cho_meo: if true then shuffle paths
     :return:
     """
-    images = []
-    for folder in os.listdir(path):
-        folder_path = os.path.join(path, folder)
-        if os.path.isdir(folder_path):
-            for file in os.listdir(folder_path):
-                images.append(os.path.join(folder_path, file))
+    if os.path.isdir(path):
+        images = []
+        for folder in os.listdir(path):
+            folder_path = os.path.join(path, folder)
+            if os.path.isdir(folder_path):
+                for file in os.listdir(folder_path):
+                    if file.lower().endswith('.txt~') or file.lower().endswith('.txt') or file.lower().endswith('.csv'):
+                        continue
+                    images.append(os.path.join(folder_path, file))
+            elif os.path.isfile(folder_path):
+                file = folder_path
+                if file.lower().endswith('.txt~') or file.lower().endswith('.txt') or file.lower().endswith('.csv'):
+                    continue
+                images.append(file)
+        if shuffle:
+            np.random.shuffle(images)
+        return images
 
-    if train:
-        np.random.shuffle(images)
+    elif os.path.isfile(path) and path.endswith('.csv'):
+        images = pd.read_csv(path)['file'].tolist()
+        if shuffle:
+            np.random.shuffle(images)
+        return images
 
-    return images
+    else:
+        return []
+        # raise ValueError('path must be path to image folder or file .csv have `file` column.')
 
 
 def read_image(path, size=(128, 128), flags=0):

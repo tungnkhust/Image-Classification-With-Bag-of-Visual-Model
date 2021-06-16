@@ -10,11 +10,19 @@
         "person": 7
     },
   "extractor_name": "Feature2D.SIFT",
+  "model_name": "MLPClassifier",
+  "model_args": {},
   "image_size": [150, 150],
+  "image_grid": [5, 5],
+  "use_local_bov": false,
+  "use_local_feature": true,
   "n_visuals": 100,
-  "serialization_dir": "models/NeutralImage",
+  "bov_path": "models/bov/bov_100.sav",
+  "serialization_dir": "models/NeutralImage_SIFT_MLP",
   "train_path": "data/natural_images/train_names.csv",
   "test_path": "data/natural_images/test_names.csv",
   "data_path": null,
-  "result_path": "results"
+  "result_path": "results/use_local_feature",
+  "use_extend_image": true,
+  "extend_image_dir": "data/extend"
 }

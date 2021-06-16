@@ -25,7 +25,7 @@ def train(
         **kwargs):
     #img_paths = get_files(img_dir)
     #image_count = 0
-    # get list descriptors from train image
+    # get list descriptors from cho_meo image
     descriptor_list = descriptor_list
     train_labels = labels
     image_count = len(train_labels)
@@ -92,7 +92,7 @@ def evaluate(model_clf_path,
              result_path):
     #img_paths = get_files(img_dir)
     #image_count = 0
-    # get list descriptors from train image
+    # get list descriptors from cho_meo image
     #descriptor_list = []
     #test_labels = []
 
@@ -138,7 +138,7 @@ def evaluate(model_clf_path,
 
 
 if __name__ == '__main__':
-    train_dir = 'data/train'
+    train_dir = 'data/cho_meo'
     test_dir = 'data/test'
     result_path = 'results'
     data = 'data/natural_images'
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     }
 
     img_paths = get_files(data)
-    # get list descriptors from train image
+    # get list descriptors from cho_meo image
     descriptor_list = []
     labels = []
 
