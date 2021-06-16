@@ -150,6 +150,7 @@ if __name__ == '__main__':
         os.makedirs(result_path)
     
     extractor = cv2.SIFT_create()
+    #extractor = cv2.xfeatures2d.SURF_create(500)
     model_clf = LinearSVC()
 
     label2idx = {
@@ -178,8 +179,8 @@ if __name__ == '__main__':
             descriptor_list.append(des)
     labels = np.array(labels)
     
-    train_descriptor_list, test_descriptor_list, train_labels, test_labels = train_test_split(descriptor_list, labels, test_size=0.2, random_state=41)
-    n_visuals = 100
+    train_descriptor_list, test_descriptor_list, train_labels, test_labels = train_test_split(descriptor_list, labels, test_size=0.33, random_state=41)
+    n_visuals = 500
     bov_path = f'models/bov_{n_visuals}.sav'
     model_clf_path = f'models/model_clf_{n_visuals}.sav'
     scale_path = f'models/scale_{n_visuals}.sav'
