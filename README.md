@@ -81,3 +81,9 @@ python run_cli.py --mode=infer \
 - test_path: đường dẫn tới data test, có thể là thư mục chứa hình ảnh, hoặc file chứ các đường dần của tập test
 - data_path: đường dẫn tới data, nếu như tập data chưa được chia train và test
 - result_path: đường dẫn tới thư mục lưu kết quả đánh giá
+
+
+## Build bov model
+```commandline
+python buil_bov.py --config_path=configs/bov_config.json
+```
