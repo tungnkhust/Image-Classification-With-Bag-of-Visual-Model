@@ -10,7 +10,7 @@ conda activate name_env
 ```
 - Cài đặt các package và thư viện liên quan
 ```bash
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 
