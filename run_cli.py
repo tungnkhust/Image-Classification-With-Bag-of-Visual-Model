@@ -17,9 +17,9 @@ def evaluate(serialization_dir, test_path=None, result_path='results'):
     learner.evaluate(img_paths=test_path, result_path=result_path)
 
 
-def infer(serialization_dir, image_path, imshow=False):
+def infer(serialization_dir, image_path, imshow=False, img_size=(480, 580)):
     learner = BoWLearner.from_serialization_dir(serialization_dir=serialization_dir)
-    y_prediction = learner.predict(image_path, imshow=imshow)
+    y_prediction = learner.predict(image_path, imshow=imshow, img_size=img_size)
     print('Prediction: ', y_prediction)
 
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--serialization_dir', type=str, default=None)
     parser.add_argument('--result_path', type=str, default='results')
     parser.add_argument('--test_path', type=str, default='data/natural_images/test_names.csv')
-    parser.add_argument('--image_path', type=str, default='data/natural_images/car/car_0000.flower')
+    parser.add_argument('--image_path', type=str, default='data/natural_images/car/car_0000.jpg')
     parser.add_argument('--imshow', type=bool, default=False)
 
     args = parser.parse_args()
@@ -52,7 +52,6 @@ if __name__ == '__main__':
         else:
             test_path = args.test_path
 
-        print(args.test_path)
         evaluate(serialization_dir, test_path, args.result_path)
 
     elif args.mode == 'infer':

@@ -116,12 +116,15 @@ def get_label_from_path(paths, label2idx):
     raise ValueError('label value is not in label2idx')
 
 
-def show_image(image, label=None):
+def show_image(image, label=None, img_size=None):
+    if img_size is not None:
+        image = cv2.resize(image, img_size)
+
     if label is not None:
         font = cv2.FONT_HERSHEY_SIMPLEX
-        org = (int(image.shape[0]/2)-30, 20)
-        font_scale = 1
-        color = (255, 0, 255)
+        org = (int(image.shape[0]/2)-30, 40)
+        font_scale = 2
+        color = (255, 255, 0)
         thickness = 2
         image = cv2.putText(image, label, org, font,
                             font_scale, color, thickness, cv2.LINE_AA)

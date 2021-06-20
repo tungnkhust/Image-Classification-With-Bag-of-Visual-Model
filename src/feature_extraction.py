@@ -3,6 +3,34 @@ import os
 from sklearn.cluster import KMeans
 import pickle
 from src.grid import Grid
+import cv2
+
+
+def get_global_feature(img, global_names=('histogram', ), size=(128, 128)):
+    features = []
+    for global_name in sorted(set(global_names)):
+        if global_name == 'histogram':
+            features.append(global_histogram(img))
+        if global_name == 'hog':
+            features.append(global_hog(img, size))
+    return np.concatenate(features, axis=-1)
+
+
+def global_hog(img, size=(128, 128)):
+    img = cv2.resize(img, size)
+    hog = cv2.HOGDescriptor()
+    h = hog.compute(img)
+    h = np.hstack(h)
+    return h
+
+
+def global_histogram(img):
+    color = ('b', 'g', 'r')
+    histogram = []
+    for i, col in enumerate(color):
+        histr = cv2.calcHist([img], [i], None, [256], [0, 256])
+        histogram.append(histr)
+    return np.concatenate(histogram, axis=0).reshape(-1)
 
 
 def get_descriptors(extractor, img):

@@ -10,8 +10,8 @@ from sklearn.cluster import MiniBatchKMeans
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from src.utils import read_image, load_model, get_files, get_label_from_path, load_json
-from src.feature_extraction import get_descriptors, get_local_bov
-from src.feature_extraction import create_bov, extract_feature
+from src.feature_extraction import get_descriptors, get_local_bov, global_histogram
+from src.feature_extraction import create_bov, extract_feature, get_global_feature
 from src.utils import write_metrics, plot_confusion_matrix, show_image
 from src.data import Generator
 from src.utils import split_data_balance, split_data_dir
@@ -39,7 +39,10 @@ class BoWLearner:
             data_path=None,
             result_path='results',
             use_extend_image=False,
-            extend_image_dir="data/extend"
+            extend_image_dir="data/extend",
+            global_names=('histogram', 'hog'),
+            use_global_feature=True,
+            hog_size=(128, 128)
     ):
         if model is None:
             model = LinearSVC()
@@ -64,6 +67,9 @@ class BoWLearner:
         self.use_local_feature = use_local_feature
         self.n_visuals = n_visuals
         self.serialization_dir = serialization_dir
+        self.use_global_feature = use_global_feature
+        self.global_names = global_names
+        self.hog_size = hog_size
 
         if os.path.exists(serialization_dir) is False:
             os.makedirs(serialization_dir)
@@ -109,21 +115,6 @@ class BoWLearner:
             else:
                 raise Exception('Train image paths must be not None.')
         self.result_path = result_path
-
-    def get_im_features(self, descriptor_list, keypoint_list):
-        features, local_bov_features, local_features = extract_feature(
-            self.bov, descriptor_list, self.n_visuals,
-            keypoint_list=keypoint_list,
-            grid=self.grid
-        )
-
-        if self.use_local_bov and len(local_bov_features) > 0:
-            features = np.c_[features, local_bov_features]
-
-        if self.use_local_feature and len(local_features) > 0:
-            features = np.c_[features, local_features]
-
-        return features
 
     def build_bov(self, descriptor_list, bov_path=None):
         # stack all descriptors to np.array
@@ -191,6 +182,38 @@ class BoWLearner:
 
         return descriptor_list, keypoint_list
 
+    def get_global_features(self, img_paths):
+        global_feature = []
+        for img_path in img_paths:
+            if isinstance(img_path, np.ndarray):
+                img = img_path
+            else:
+                img = read_image(img_path, size=self.image_size, flags=1)
+            feature = get_global_feature(img, global_names=self.global_names, size=self.hog_size)
+            global_feature.append(feature)
+        return np.vstack(global_feature)
+
+    def get_im_features(self, descriptor_list, keypoint_list, img_paths=None):
+        features, local_bov_features, local_features = extract_feature(
+            self.bov, descriptor_list, self.n_visuals,
+            keypoint_list=keypoint_list,
+            grid=self.grid
+        )
+        if self.use_local_bov and len(local_bov_features) > 0:
+            features = np.c_[features, local_bov_features]
+
+        if self.use_local_feature and len(local_features) > 0:
+            features = np.c_[features, local_features]
+
+            # global feature
+        if self.use_global_feature:
+            print(f'Use global features : {self.global_names}')
+            im_global_features = self.get_global_features(img_paths=img_paths)
+            print('Global shape: ', im_global_features.shape)
+            features = np.c_[features, im_global_features]
+
+        return features
+
     def train(self, **kwargs):
         image_count = 0
         # get list descriptors from cho_meo image
@@ -204,7 +227,7 @@ class BoWLearner:
             self.build_bov(descriptor_list)
         print('Create features...')
         # create feature form bov
-        im_features = self.get_im_features(descriptor_list, keypoint_list)
+        im_features = self.get_im_features(descriptor_list, keypoint_list, img_paths=self.img_train_paths)
 
         print('Normalize...')
         self.scale.fit(im_features)
@@ -247,7 +270,7 @@ class BoWLearner:
         test_labels = np.array(test_labels)
 
         print('Extract feature')
-        test_features = self.get_im_features(descriptor_list, keypoint_list)
+        test_features = self.get_im_features(descriptor_list, keypoint_list, img_paths=img_paths)
         test_features = self.scale.transform(test_features)
 
         print('Predict:')
@@ -264,6 +287,8 @@ class BoWLearner:
 
         plot_confusion_matrix(true_label, pred_label, labels, normalize=True, save_dir=result_path)
         plot_confusion_matrix(true_label, pred_label, labels, normalize=False, save_dir=result_path)
+        predict_df = pd.DataFrame({"file": img_paths, "predict": pred_label})
+        predict_df.to_csv(os.path.join(result_path, 'prediction.csv'), index=False)
 
     def train_generator(
             self,
@@ -316,7 +341,7 @@ class BoWLearner:
             self.evaluate(img_test_paths, result_path=result_path)
         return self.model, self.scale
 
-    def predict(self, image_path, imshow=False):
+    def predict(self, image_path, imshow=False, img_size=(480, 480)):
         if isinstance(image_path, str) and os.path.exists(image_path):
             image = read_image(image_path, size=self.image_size)
         elif isinstance(image_path, np.ndarray):
@@ -325,15 +350,14 @@ class BoWLearner:
             raise ValueError(f'image value {image_path} error. image argument must be np.array or path to image')
 
         descriptor_list, keypoint_list = self.get_descriptor_list_from_images([image])
-        im_features = self.get_im_features(descriptor_list, keypoint_list)
-
+        im_features = self.get_im_features(descriptor_list, keypoint_list, img_paths=[image_path])
         im_features = self.scale.transform(im_features)
         y_pred = self.model.predict(im_features)[0]
         y_label = self.idx2label[y_pred]
         if imshow:
             if isinstance(image_path, str):
-                image = read_image(image_path, size=self.image_size, flags=1)
-            show_image(image, y_label)
+                image = cv2.imread(filename=image_path, flags=1)
+            show_image(image, y_label, img_size=img_size)
         return y_label
 
     def save_config(self, config_path=None):
@@ -347,6 +371,10 @@ class BoWLearner:
         config['image_grid'] = self.image_grid
         config['use_local_bov'] = self.use_local_bov
         config['use_local_feature'] = self.use_local_feature
+        config['use_global_feature'] = self.use_global_feature
+        config['global_names'] = self.global_names
+        config['hog_size'] = self.hog_size
+
         if config_path is None:
             config_path = os.path.join(self.serialization_dir, 'config.json')
 
@@ -362,6 +390,7 @@ class BoWLearner:
             test_path=None,
             data_path=None
     ):
+        print(f"load model from {serialization_dir}")
         config_path = os.path.join(serialization_dir, 'config.json')
         config = load_json(config_path)
         bov_path = os.path.join(serialization_dir, f'bov.sav')
@@ -386,7 +415,10 @@ class BoWLearner:
             data_path=data_path,
             use_local_bov=config['use_local_bov'],
             image_grid=config['image_grid'],
-            use_local_feature=config['use_local_feature']
+            use_local_feature=config['use_local_feature'],
+            use_global_feature=config['use_global_feature'],
+            global_names=config['global_names'],
+            hog_size=config['hog_size']
         )
 
     @classmethod
@@ -444,5 +476,8 @@ class BoWLearner:
             use_local_feature=config['use_local_feature'],
             serialization_dir=serialization_dir,
             extend_image_dir=config['extend_image_dir'],
-            use_extend_image=config['use_extend_image']
+            use_extend_image=config['use_extend_image'],
+            use_global_feature=config['use_global_feature'],
+            global_names=config['global_names'],
+            hog_size=config['hog_size']
         )

@@ -18,11 +18,14 @@
   "use_local_feature": true,
   "n_visuals": 100,
   "bov_path": "models/bov/bov_100.sav",
-  "serialization_dir": "models/NeutralImage_SIFT_MLP",
+  "serialization_dir": "models/NeutralImage_Hog_Local_Feature",
   "train_path": "data/natural_images/train_names.csv",
   "test_path": "data/natural_images/test_names.csv",
   "data_path": null,
   "result_path": "results/use_local_feature",
-  "use_extend_image": true,
-  "extend_image_dir": "data/extend"
+  "use_extend_image": false,
+  "extend_image_dir": "data/extend",
+  "use_global_feature": true,
+  "global_names": ["hog"],
+  "hog_size": [128, 128]
 }
