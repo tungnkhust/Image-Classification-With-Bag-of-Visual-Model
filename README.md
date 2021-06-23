@@ -17,10 +17,10 @@ Ví dụ mẫu:
 
 ![person](docs/img/person_0106.jpg)
 ![dog](docs/img/dog_0051.jpg)
-
-![car](docs/img/car_0022.jpg)
 ![flower](docs/img/flower_0006.jpg)
 ![fruit](docs/img/fruit_0004.jpg)
+
+![car](docs/img/car_0022.jpg)
 ![airplane](docs/img/airplane_0000.jpg)
 ![motorbike](docs/img/motorbike_0000.jpg)
 
