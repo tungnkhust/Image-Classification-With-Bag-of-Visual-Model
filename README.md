@@ -28,6 +28,9 @@ Ví dụ mẫu:
 Download
 Bạn có thể download trực tiếp trên [Kaggle](https://www.kaggle.com/prasunroy/natural-images?fbclid=IwAR1nbvxfAfyQqbqTlfvr02IIGZFnrVI0oEufuL5hX0enqXrqe7HR1dFmMwA) hoặc trực tiếp từ drive của chúng tôi tại [đây](https://drive.google.com/file/d/1iYSubDwyk6TFvmguWAUoalBbtVrzPh3w/view?usp=sharing).
 <br> Chúng tôi có tìm kiếm thêm một số data cho các nhãn **chó**, **mèo** và **flower** bạn có thể download tại [đây](https://drive.google.com/file/d/1Gr-YTiopFQ2gXntHptjpz5rabhI4sZn6/view?usp=sharing).
+
+---
+
 ## Set up
 #### Cài đặt môi trường
 - Cài đặt môi trường anaconda theo hướng dẫn tại [đây](https://docs.anaconda.com/anaconda/install/)
@@ -41,7 +44,7 @@ conda activate name_env
 pip install -r requirements.txt
 ```
 
-
+---
 ## Use command line interface
 #### Huấn luyện models
 - chỉnh sửa các siêu tham số trong file config tương tứng
@@ -53,12 +56,14 @@ Mô tả các tham số truyền:
 - mode=train để lựa chọn mode huấn luyện model.
 - config_path: đường dẫn tới file config.
 
+
+
+
 #### Đánh giá models
 - run command line:
 ```
 python run_cli.py --mode=eval --config_path=configs/natural_image_config.json
 ```
-or
 ```
 python run_cli.py --mode=eval \ 
 --serialization_dir=models/Local_Bov_His_Hog \
@@ -78,7 +83,7 @@ python run_cli.py --mode=infer \
 --image_path='data/natural_images/car/car_0000.jpg' \
 --imshow=True
 ```
-or
+
 ```
 python run_cli.py --mode=infer \
 --serialization_dir=models/Local_Bov_His_Hog \
@@ -143,6 +148,8 @@ Dự đoán phân loại của model lựa chọn.
 - use_global_feature: có sử dụng global feature hay không
 - global_names: tên các global feature sử dựng, hiện tại chỉ hỗ trỡ "histogram" và "hog"
 - hog_size: kích thước ảnh khi sử dụng để trích xuất đặc trưng hog.
+
+---
 
 ## Build bov model
 ```commandline
