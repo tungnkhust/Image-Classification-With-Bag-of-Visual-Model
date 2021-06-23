@@ -12,12 +12,13 @@ Chúng tôi thực nghiệm với bộ Nature Image trên [Kaggle](https://www.k
 - person: ảnh người, gồm 986 ảnh
 
 Ví dụ mẫu:
-![person](docs/img/person_0106.jpg)
+
 ![cat](docs/img/cat_0027.jpg)
 
-![ariplane](docs/img/airplane_0000.jpg)
-![car](docs/img/car_0022.jpg)
+![person](docs/img/person_0106.jpg)
 ![dog](docs/img/dog_0051.jpg)
+
+![car](docs/img/car_0022.jpg)
 ![flower](docs/img/flower_0006.jpg)
 ![fruit](docs/img/fruit_0004.jpg)
 ![airplane](docs/img/airplane_0000.jpg)
