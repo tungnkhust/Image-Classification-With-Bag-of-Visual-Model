@@ -1,0 +1,19 @@
+Accuracy : 0.8459869848156182
+Precision: 0.8408879772488219
+Recall   : 0.836984932357308
+F1-Score : 0.8385303694936457
+Detail
+              precision    recall  f1-score   support
+
+    airplane       0.94      0.88      0.91       146
+         car       0.90      0.88      0.89       194
+         cat       0.62      0.68      0.65       177
+         dog       0.58      0.57      0.57       141
+      flower       0.80      0.78      0.79       169
+       fruit       0.99      1.00      1.00       200
+   motorbike       0.96      0.99      0.97       158
+      person       0.93      0.92      0.93       198
+
+    accuracy                           0.85      1383
+   macro avg       0.84      0.84      0.84      1383
+weighted avg       0.85      0.85      0.85      1383
