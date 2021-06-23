@@ -56,9 +56,6 @@ Mô tả các tham số truyền:
 - mode=train để lựa chọn mode huấn luyện model.
 - config_path: đường dẫn tới file config.
 
-
-
-
 #### Đánh giá models
 - run command line:
 ```
@@ -96,6 +93,8 @@ Dự đoán phân loại của model lựa chọn.
 - serialization_dir: đường dẫn tới folder lưu model.
 - image_path: đường dẫn tới ảnh muốn dự đoán
 - imshow: có show hình ảnh dự đoán hay không. Muốn tắt ảnh ấn một phím bất kỳ
+
+Một số model chúng tôi đã train vào lưu tại [đây](https://drive.google.com/drive/folders/1FgQ7-yMI-T3yqjtZ8d9eTAjzFbwK1gil?usp=sharing), bạn có thể tải về và dải nén để có thể thử nghiệm.
 
 ### Mô tả các tham số trong file config:
 ```json
